@@ -1,0 +1,39 @@
+From 725a96aaa247cae90f46753ca85dadbf22a64e5f Mon Sep 17 00:00:00 2001
+From: Igor Gnatenko <i.gnatenko.brain@gmail.com>
+Date: Mon, 30 Oct 2017 10:19:47 +0100
+Subject: [PATCH] build: do not assume that INSTALL is cp
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+INSTALL is supposed to be `install` in most of the cases which
+doesn't work with directories, but works perfectly with files.
+
+Don't do this assumption.
+
+Reported-by: Jiří Vymazal <jvymazal@redhat.com>
+References: https://bugzilla.redhat.com/show_bug.cgi?id=1506251
+Signed-off-by: Igor Gnatenko <i.gnatenko.brain@gmail.com>
+---
+ Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 781a41d..c6eb229 100644
+--- a/Makefile
++++ b/Makefile
+@@ -181,8 +181,9 @@ $(PKGCONFNAME): hiredis.h
+ 	@echo Cflags: -I\$${includedir} -D_FILE_OFFSET_BITS=64 >> $@
+ 
+ install: $(DYLIBNAME) $(STLIBNAME) $(PKGCONFNAME)
+-	mkdir -p $(INSTALL_INCLUDE_PATH) $(INSTALL_LIBRARY_PATH)
+-	$(INSTALL) hiredis.h async.h read.h sds.h adapters $(INSTALL_INCLUDE_PATH)
++	mkdir -p $(INSTALL_INCLUDE_PATH) $(INSTALL_INCLUDE_PATH)/adapters $(INSTALL_LIBRARY_PATH)
++	$(INSTALL) hiredis.h async.h read.h sds.h $(INSTALL_INCLUDE_PATH)
++	$(INSTALL) adapters/*.h $(INSTALL_INCLUDE_PATH)/adapters
+ 	$(INSTALL) $(DYLIBNAME) $(INSTALL_LIBRARY_PATH)/$(DYLIB_MINOR_NAME)
+ 	cd $(INSTALL_LIBRARY_PATH) && ln -sf $(DYLIB_MINOR_NAME) $(DYLIBNAME)
+ 	$(INSTALL) $(STLIBNAME) $(INSTALL_LIBRARY_PATH)
+-- 
+2.14.3
+
