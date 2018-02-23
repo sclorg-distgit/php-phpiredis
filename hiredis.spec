@@ -1,6 +1,8 @@
+%global debug_package %{nil}
+
 Name:           hiredis
 Version:        0.13.3
-Release:        6%{?dist}
+Release:        0%{?dist}
 Summary:        Minimalistic C client library for Redis
 License:        BSD
 URL:            https://github.com/redis/hiredis
@@ -8,7 +10,6 @@ Source0:        https://github.com/redis/hiredis/archive/v%{version}.tar.gz#/%{n
 # https://github.com/redis/hiredis/pull/554
 Patch0:         0001-build-do-not-assume-that-INSTALL-is-cp.patch
 BuildRequires:  gcc
-BuildRequires:  redis
 
 %description 
 Hiredis is a minimalistic C client library for the Redis database.
@@ -22,40 +23,41 @@ This package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%autosetup -p1
+%setup -q
+%patch0 -p1 -b .pr554
+
 
 %build
-%make_build PREFIX="%{_prefix}" LIBRARY_PATH="%{_lib}"     \
-            DEBUG="%{optflags}" LDFLAGS="%{?__global_ldflags}"
+make %{?_smp_mflags} \
+    PREFIX="%{_prefix}" \
+    LIBRARY_PATH="%{_lib}"     \
+    DEBUG="%{optflags}" \
+    LDFLAGS="%{?__global_ldflags}"
+
 
 %install
-%make_install PREFIX="%{_prefix}" LIBRARY_PATH="%{_lib}"
+make install \
+    DESTDIR=%{buildroot} \
+    PREFIX="%{_prefix}" \
+    LIBRARY_PATH="%{_lib}"
 
-find %{buildroot} -name '*.a' -delete -print
+# Only keep the static library
+rm %{buildroot}%{_libdir}/libhiredis.so*
 
-# I don't believe it's stable, so keep previous schema here.
-cd %{buildroot}%{_libdir} && ln -sf libhiredis.so.0.13 libhiredis.so.0
-
-%check
-# TODO: Koji isolated environment may cause some tests fail to pass.
-make check || true
-
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
 
 %files
 %doc COPYING
-%{_libdir}/libhiredis.so.0
-%{_libdir}/libhiredis.so.0.13
 
 %files devel
 %doc CHANGELOG.md README.md
 %{_includedir}/%{name}/
-%{_libdir}/libhiredis.so
 %{_libdir}/pkgconfig/hiredis.pc
+%{_libdir}/libhiredis.a
 
 %changelog
+* Fri Feb 23 2018 Remi Collet <remi@remirepo.net> - 0.13.3-0
+- only provides static library
+
 * Mon Oct 30 2017 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.13.3-6
 - Fix FTBFS
 
