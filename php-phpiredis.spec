@@ -10,14 +10,14 @@
 #
 %if 0%{?scl:1}
 %global sub_prefix %{scl_prefix}
-%if "%{scl}" == "rh-php56"
-%global sub_prefix sclo-php56-
-%endif
 %if "%{scl}" == "rh-php70"
 %global sub_prefix sclo-php70-
 %endif
 %if "%{scl}" == "rh-php71"
 %global sub_prefix sclo-php71-
+%endif
+%if "%{scl}" == "rh-php72"
+%global sub_prefix sclo-php72-
 %endif
 %scl_package         php-phpiredis
 %endif
@@ -32,7 +32,7 @@
 
 Name:           %{?sub_prefix}php-%{pecl_name}
 Version:        1.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        Client extension for Redis
 
@@ -117,6 +117,9 @@ install -Dpm 644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
 
 
 %changelog
+* Thu Nov 15 2018 Remi Collet <remi@remirepo.net> - 1.0.0-2
+- build for sclo-php72
+
 * Fri Feb 23 2018 Remi Collet <remi@remirepo.net> - 1.0.0-1
 - cleanup for SCLo build
 
