@@ -2,7 +2,7 @@
 
 Name:           hiredis
 Version:        0.13.3
-Release:        0%{?dist}
+Release:        0%{?dist}.1
 Summary:        Minimalistic C client library for Redis
 License:        BSD
 URL:            https://github.com/redis/hiredis
@@ -55,6 +55,9 @@ rm %{buildroot}%{_libdir}/libhiredis.so*
 %{_libdir}/libhiredis.a
 
 %changelog
+* Mon Oct 28 2019 Remi Collet <remi@remirepo.net> - 0.13.3-0.1
+- rebuild
+
 * Fri Feb 23 2018 Remi Collet <remi@remirepo.net> - 0.13.3-0
 - only provides static library
 
