@@ -2,7 +2,7 @@
 #
 # remirepo spec file for php-phpiredis
 #
-# Copyright (c) 2016-2018 Remi Collet
+# Copyright (c) 2016-2019 Remi Collet
 # License: CC-BY-SA
 # http://creativecommons.org/licenses/by-sa/4.0/
 #
@@ -19,6 +19,9 @@
 %if "%{scl}" == "rh-php72"
 %global sub_prefix sclo-php72-
 %endif
+%if "%{scl}" == "rh-php73"
+%global sub_prefix sclo-php73-
+%endif
 %scl_package         php-phpiredis
 %endif
 
@@ -32,7 +35,7 @@
 
 Name:           %{?sub_prefix}php-%{pecl_name}
 Version:        1.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        Client extension for Redis
 
@@ -117,6 +120,9 @@ install -Dpm 644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
 
 
 %changelog
+* Mon Oct 28 2019 Remi Collet <remi@remirepo.net> - 1.0.0-3
+- build for sclo-php73
+
 * Thu Nov 15 2018 Remi Collet <remi@remirepo.net> - 1.0.0-2
 - build for sclo-php72
 
